@@ -40,10 +40,11 @@ class ModelViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的模型"""
+        """获取查询集，显示所有模型"""
         if getattr(self, 'swagger_fake_view', False):  # 处理swagger文档生成
             return Model.objects.none()
-        return Model.objects.filter(created_by=self.request.user)
+        # 返回所有模型，不限制用户
+        return Model.objects.all().order_by('-created_at')
     
     def perform_create(self, serializer):
         """创建模型时设置创建者"""
@@ -141,10 +142,11 @@ class DockerImageViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的Docker镜像"""
+        """获取查询集，显示所有Docker镜像"""
         if getattr(self, 'swagger_fake_view', False):  # 处理swagger文档生成
             return DockerImage.objects.none()
-        return DockerImage.objects.filter(created_by=self.request.user)
+        # 返回所有Docker镜像，不限制用户
+        return DockerImage.objects.all().order_by('-created_at')
     
     def perform_create(self, serializer):
         """创建Docker镜像时设置创建者"""

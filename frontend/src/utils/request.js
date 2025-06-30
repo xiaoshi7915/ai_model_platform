@@ -26,28 +26,17 @@ service.interceptors.request.use(
       config.headers['Authorization'] = `Bearer ${token}`
     }
     
-    // 彻底解决URL前缀问题
-    // 1. 移除任何 /api/v1/api/v1/ 形式的重复前缀
-    if (config.url.includes('/api/v1/api/v1/')) {
-      config.url = config.url.replace('/api/v1/api/v1/', '/');
-    }
+    console.log('原始请求URL:', config.url);
+    console.log('baseURL:', config.baseURL);
     
-    // 2. 移除 /api/v1/ 前缀，因为baseURL已经包含这个前缀
-    if (config.url.startsWith('/api/v1/')) {
-      config.url = config.url.replace('/api/v1/', '/');
-    }
-    
-    // 3. 移除 /api/ 前缀
-    if (config.url.startsWith('/api/')) {
-      config.url = config.url.replace('/api/', '/');
-    }
-    
-    // 4. 确保所有以api-开头的路径正确处理
-    if (config.url.includes('/api-')) {
-      config.url = config.url.replace('/api-', '/');
+    // 不需要复杂的URL处理，因为baseURL已经是/api/v1
+    // 只需要确保URL以/开头即可
+    if (!config.url.startsWith('/')) {
+      config.url = '/' + config.url;
     }
 
-    console.log('使用request.js发送请求到:', config.url);
+    console.log('最终请求URL:', config.url);
+    console.log('完整URL:', config.baseURL + config.url);
     
     return config
   },

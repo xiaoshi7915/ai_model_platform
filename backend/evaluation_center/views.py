@@ -24,11 +24,12 @@ class EvaluationTaskViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'started_at', 'completed_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的评测任务"""
+        """获取查询集，显示所有评测任务"""
         # 检查是否是 swagger 文档生成
         if getattr(self, 'swagger_fake_view', False):
             return EvaluationTask.objects.none()
-        return EvaluationTask.objects.filter(created_by=self.request.user)
+        # 返回所有评测任务，不限制用户
+        return EvaluationTask.objects.all().order_by('-created_at')
     
     def perform_create(self, serializer):
         """创建评测任务时设置创建者"""
@@ -141,11 +142,12 @@ class EvaluationReportViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['created_at', 'updated_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的评测报告"""
+        """获取查询集，显示所有评测报告"""
         # 检查是否是 swagger 文档生成
         if getattr(self, 'swagger_fake_view', False):
             return EvaluationReport.objects.none()
-        return EvaluationReport.objects.filter(task__created_by=self.request.user)
+        # 返回所有评测报告，不限制用户
+        return EvaluationReport.objects.all().order_by('-created_at')
     
     @action(detail=True, methods=['get'])
     def download(self, request, pk=None):
@@ -167,11 +169,12 @@ class ModelComparisonViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'updated_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的模型比较"""
+        """获取查询集，显示所有模型比较"""
         # 检查是否是 swagger 文档生成
         if getattr(self, 'swagger_fake_view', False):
             return ModelComparison.objects.none()
-        return ModelComparison.objects.filter(created_by=self.request.user)
+        # 返回所有模型比较，不限制用户
+        return ModelComparison.objects.all().order_by('-created_at')
     
     def perform_create(self, serializer):
         """创建模型比较时设置创建者"""

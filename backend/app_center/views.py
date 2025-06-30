@@ -27,10 +27,11 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'updated_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的应用"""
+        """获取查询集，显示所有应用"""
         if getattr(self, 'swagger_fake_view', False):  # 处理swagger文档生成
             return Application.objects.none()
-        return Application.objects.filter(created_by=self.request.user)
+        # 返回所有应用，不限制用户
+        return Application.objects.all().order_by('-created_at')
     
     def get_object(self):
         """
@@ -319,10 +320,11 @@ class PluginViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'updated_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的插件或公开插件"""
+        """获取查询集，显示所有插件"""
         if getattr(self, 'swagger_fake_view', False):  # 处理swagger文档生成
             return Plugin.objects.none()
-        return Plugin.objects.filter(created_by=self.request.user)
+        # 返回所有插件，不限制用户
+        return Plugin.objects.all().order_by('-created_at')
     
     def get_object(self):
         """

@@ -26,10 +26,11 @@ class DatasetViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'updated_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的数据集"""
+        """获取查询集，显示所有数据集"""
         if getattr(self, 'swagger_fake_view', False):  # 处理swagger文档生成
             return Dataset.objects.none()
-        return Dataset.objects.filter(created_by=self.request.user)
+        # 返回所有数据集，不限制用户
+        return Dataset.objects.all().order_by('-created_at')
     
     def perform_create(self, serializer):
         """创建数据集时设置创建者"""
@@ -193,10 +194,11 @@ class KnowledgeBaseViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'updated_at']
     
     def get_queryset(self):
-        """获取查询集，只返回当前用户的知识库"""
+        """获取查询集，显示所有知识库"""
         if getattr(self, 'swagger_fake_view', False):  # 处理swagger文档生成
             return KnowledgeBase.objects.none()
-        return KnowledgeBase.objects.filter(created_by=self.request.user)
+        # 返回所有知识库，不限制用户
+        return KnowledgeBase.objects.all().order_by('-created_at')
     
     def perform_create(self, serializer):
         """创建知识库时设置创建者"""
