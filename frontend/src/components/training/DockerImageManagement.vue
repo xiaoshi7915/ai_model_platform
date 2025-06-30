@@ -1,6 +1,6 @@
 <template>
   <div class="docker-image-management">
-    <div v-loading="$store.state.dockerImages.loading">
+    <div v-loading="loading">
       <!-- 搜索和操作区域 -->
       <div class="table-actions">
         <el-input
@@ -168,9 +168,9 @@ export default {
   },
   computed: {
     ...mapState({
-      dockerImages: state => state.dockerImages.dockerImages,
-      loading: state => state.dockerImages.loading,
-      totalCount: state => state.dockerImages.count
+      dockerImages: state => state.trainingCenter.dockerImages,
+      loading: state => state.trainingCenter.loading,
+      totalCount: state => state.trainingCenter.total
     }),
     totalImages() {
       return this.totalCount || 0;
@@ -201,7 +201,7 @@ export default {
         params.search = this.searchQuery;
       }
       
-      return this.$store.dispatch('dockerImages/fetchDockerImages', params)
+      return this.$store.dispatch('trainingCenter/fetchDockerImages', params)
         .catch(error => {
           console.error('获取Docker镜像列表失败:', error)
           this.$message.error('获取Docker镜像列表失败')
@@ -255,7 +255,7 @@ export default {
           
           if (this.dialogType === 'create') {
             // 创建Docker镜像
-            this.$store.dispatch('dockerImages/createDockerImage', this.currentImage)
+            this.$store.dispatch('trainingCenter/createDockerImage', this.currentImage)
               .then(() => {
                 this.$message.success('添加Docker镜像成功');
                 this.dialogVisible = false;
@@ -285,7 +285,7 @@ export default {
               });
           } else {
             // 更新Docker镜像
-            this.$store.dispatch('dockerImages/updateDockerImage', {
+            this.$store.dispatch('trainingCenter/updateDockerImage', {
               id: this.currentImage.id,
               imageData: this.currentImage
             })
@@ -330,7 +330,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.dispatch('dockerImages/deleteDockerImage', image.id)
+        this.$store.dispatch('trainingCenter/deleteDockerImage', image.id)
           .then(() => {
             this.$message.success('删除Docker镜像成功')
             this.fetchDockerImages()
@@ -355,7 +355,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('dockerImages/fetchDockerImages')
+    this.$store.dispatch('trainingCenter/fetchDockerImages')
       .catch(error => {
         console.error('获取Docker镜像列表失败:', error)
         this.$message.error('获取Docker镜像列表失败')

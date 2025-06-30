@@ -91,25 +91,45 @@ const mutations = {
 
 const actions = {
   // 获取评估任务列表
-  async fetchEvaluationTasks({ commit }, params = {}) {
+  async fetchEvaluationTasks({ commit, state }, params = {}) {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
     try {
-      const response = await evaluationCenter.getEvaluationTasks(params)
+      const response = await evaluationCenter.getEvaluationTasks({
+        page: params.page || state.pagination.currentPage,
+        page_size: params.pageSize || state.pagination.pageSize,
+        ...params
+      })
       console.log('评估任务API响应:', response)
       
       // 处理API响应数据
       let tasks = []
+      let total = 0
+      
       if (response && response.results) {
         tasks = response.results
+        total = response.count || response.results.length
       } else if (Array.isArray(response)) {
         tasks = response
+        total = response.length
       } else if (response && response.data) {
-        tasks = Array.isArray(response.data) ? response.data : response.data.results || []
+        if (response.data.results) {
+          tasks = response.data.results
+          total = response.data.count || response.data.results.length
+        } else if (Array.isArray(response.data)) {
+          tasks = response.data
+          total = response.data.length
+        }
       }
       
       commit('SET_EVALUATION_TASKS', tasks)
-      return tasks
+      commit('SET_PAGINATION', {
+        currentPage: params.page || state.pagination.currentPage,
+        pageSize: params.pageSize || state.pagination.pageSize,
+        total: total
+      })
+      
+      return { results: tasks, count: total }
     } catch (error) {
       console.error('获取评估任务失败:', error)
       commit('SET_ERROR', error.message || '获取评估任务失败')
@@ -227,25 +247,45 @@ const actions = {
   },
 
   // 获取评估报告列表
-  async fetchEvaluationReports({ commit }, params = {}) {
+  async fetchReports({ commit, state }, params = {}) {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
     try {
-      const response = await evaluationCenter.getEvaluationReports(params)
+      const response = await evaluationCenter.getEvaluationReports({
+        page: params.page || state.pagination.currentPage,
+        page_size: params.pageSize || state.pagination.pageSize,
+        ...params
+      })
       console.log('评估报告API响应:', response)
       
       // 处理API响应数据
       let reports = []
+      let total = 0
+      
       if (response && response.results) {
         reports = response.results
+        total = response.count || response.results.length
       } else if (Array.isArray(response)) {
         reports = response
+        total = response.length
       } else if (response && response.data) {
-        reports = Array.isArray(response.data) ? response.data : response.data.results || []
+        if (response.data.results) {
+          reports = response.data.results
+          total = response.data.count || response.data.results.length
+        } else if (Array.isArray(response.data)) {
+          reports = response.data
+          total = response.data.length
+        }
       }
       
       commit('SET_REPORTS', reports)
-      return reports
+      commit('SET_PAGINATION', {
+        currentPage: params.page || state.pagination.currentPage,
+        pageSize: params.pageSize || state.pagination.pageSize,
+        total: total
+      })
+      
+      return { results: reports, count: total }
     } catch (error) {
       console.error('获取评估报告失败:', error)
       commit('SET_ERROR', error.message || '获取评估报告失败')
@@ -274,25 +314,45 @@ const actions = {
   },
 
   // 获取模型对比列表
-  async fetchComparisons({ commit }, params = {}) {
+  async fetchComparisons({ commit, state }, params = {}) {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
     try {
-      const response = await evaluationCenter.getModelComparisons(params)
+      const response = await evaluationCenter.getModelComparisons({
+        page: params.page || state.pagination.currentPage,
+        page_size: params.pageSize || state.pagination.pageSize,
+        ...params
+      })
       console.log('模型对比API响应:', response)
       
       // 处理API响应数据
       let comparisons = []
+      let total = 0
+      
       if (response && response.results) {
         comparisons = response.results
+        total = response.count || response.results.length
       } else if (Array.isArray(response)) {
         comparisons = response
+        total = response.length
       } else if (response && response.data) {
-        comparisons = Array.isArray(response.data) ? response.data : response.data.results || []
+        if (response.data.results) {
+          comparisons = response.data.results
+          total = response.data.count || response.data.results.length
+        } else if (Array.isArray(response.data)) {
+          comparisons = response.data
+          total = response.data.length
+        }
       }
       
       commit('SET_COMPARISONS', comparisons)
-      return comparisons
+      commit('SET_PAGINATION', {
+        currentPage: params.page || state.pagination.currentPage,
+        pageSize: params.pageSize || state.pagination.pageSize,
+        total: total
+      })
+      
+      return { results: comparisons, count: total }
     } catch (error) {
       console.error('获取模型对比失败:', error)
       commit('SET_ERROR', error.message || '获取模型对比失败')
@@ -375,6 +435,34 @@ const actions = {
       throw error
     } finally {
       commit('SET_LOADING', false)
+    }
+  },
+  
+  // 获取模型列表（简化版）
+  async fetchModels({ commit }) {
+    try {
+      const response = await trainingCenter.getModels()
+      const models = response.results || response.data || response
+      commit('SET_MODELS', models)
+      return models
+    } catch (error) {
+      console.error('获取模型列表失败:', error)
+      commit('SET_ERROR', error.message)
+      throw error
+    }
+  },
+  
+  // 获取数据集列表（简化版）
+  async fetchDatasets({ commit }) {
+    try {
+      const response = await dataCenter.getDatasets()
+      const datasets = response.results || response.data || response
+      commit('SET_DATASETS', datasets)
+      return datasets
+    } catch (error) {
+      console.error('获取数据集列表失败:', error)
+      commit('SET_ERROR', error.message)
+      throw error
     }
   },
 

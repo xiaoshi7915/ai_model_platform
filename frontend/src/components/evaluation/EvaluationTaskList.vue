@@ -160,7 +160,7 @@ export default {
     },
     
     totalTasks() {
-      return this.filteredTasks.length
+      return this.$store.state.evaluationCenter.pagination.total || 0
     }
   },
   methods: {

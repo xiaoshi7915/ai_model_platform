@@ -143,7 +143,9 @@ def generate_mock_report_data(task):
     
     # 根据任务的指标生成模拟结果
     details = {}
-    for metric in task.metrics:
+    metrics_to_use = task.metrics if task.metrics else ['accuracy', 'precision', 'recall', 'f1']
+    
+    for metric in metrics_to_use:
         if metric == 'accuracy':
             details[metric] = {
                 'value': round(random.uniform(0.85, 0.95), 4),
@@ -179,6 +181,13 @@ def generate_mock_report_data(task):
                 'value': round(random.uniform(0.88, 0.96), 4),
                 'description': 'ROC曲线下的面积'
             }
+    
+    # 如果没有匹配的指标，添加默认指标
+    if not details:
+        details['accuracy'] = {
+            'value': round(random.uniform(0.85, 0.95), 4),
+            'description': '模型预测正确的样本比例'
+        }
     
     # 生成图表数据
     charts = {

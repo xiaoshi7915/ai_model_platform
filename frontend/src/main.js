@@ -21,7 +21,7 @@ Vue.use(Element, {
 setStore(store)
 
 // 配置axios全局默认值
-axios.defaults.baseURL = '/api/v1'  // 统一API前缀
+axios.defaults.baseURL = 'http://localhost:5688/api/v1'  // 指向后端5688端口
 axios.defaults.timeout = 30000
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
@@ -122,6 +122,25 @@ axios.interceptors.response.use(
 // 全局注册axios
 Vue.prototype.$axios = axios
 
+// 全局错误处理 - 忽略Chrome扩展相关错误
+window.addEventListener('error', (event) => {
+  if (event.message && event.message.includes('message channel closed')) {
+    console.warn('忽略Chrome扩展相关错误:', event.message)
+    event.preventDefault()
+    return false
+  }
+})
+
+// 全局未处理的Promise错误
+window.addEventListener('unhandledrejection', (event) => {
+  if (event.reason && event.reason.message && 
+      event.reason.message.includes('message channel closed')) {
+    console.warn('忽略Chrome扩展相关Promise错误:', event.reason.message)
+    event.preventDefault()
+    return false
+  }
+})
+
 Vue.config.productionTip = false
 
 // 自动登录功能
@@ -137,7 +156,7 @@ const autoLogin = async () => {
     console.log('开始自动登录...')
     await store.dispatch('user/login', {
       username: 'admin',
-      password: '123456'
+      password: 'admin123456@'
     })
     console.log('自动登录成功')
   } catch (error) {

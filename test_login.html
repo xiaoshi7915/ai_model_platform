@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>登录测试</h1>
+    <button onclick="testLogin()">测试登录</button>
+    <div id="result"></div>
+
+    <script>
+        async function testLogin() {
+            try {
+                console.log('开始测试登录...');
+                
+                const response = await axios.post('http://localhost:5688/api/v1/auth/login/', {
+                    username: 'admin',
+                    password: 'admin123456@'
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('登录成功:', response.data);
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: green;">登录成功!</p>' +
+                    '<pre>' + JSON.stringify(response.data, null, 2) + '</pre>';
+                    
+            } catch (error) {
+                console.error('登录失败:', error);
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">登录失败: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html> 

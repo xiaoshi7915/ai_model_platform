@@ -259,51 +259,25 @@ export default {
     async fetchEvaluationTasks() {
       this.loading = true;
       try {
-        // 模拟API调用
-        setTimeout(() => {
-          this.tasks = [
-            {
-              id: 1,
-              name: 'GPT-4性能评测',
-              modelName: 'GPT-4',
-              datasetName: 'MMLU数据集',
-              metrics: ['accuracy', 'latency'],
-              status: 'completed',
-              progress: 100,
-              createTime: '2023-05-15T10:30:00'
-            },
-            {
-              id: 2,
-              name: 'Claude 3性能评测',
-              modelName: 'Claude 3',
-              datasetName: 'GSM8K数据集',
-              metrics: ['accuracy', 'precision', 'recall'],
-              status: 'running',
-              progress: 65,
-              createTime: '2023-05-16T14:20:00'
-            },
-            {
-              id: 3,
-              name: 'LLaMA 3性能评测',
-              modelName: 'LLaMA 3',
-              datasetName: 'HumanEval数据集',
-              metrics: ['accuracy', 'f1'],
-              status: 'failed',
-              progress: 30,
-              createTime: '2023-05-14T09:15:00'
-            }
-          ];
-          this.totalTasks = this.tasks.length;
-          this.loading = false;
-        }, 1000);
+        const response = await this.$store.dispatch('evaluationCenter/fetchEvaluationTasks', {
+          page: this.currentPage,
+          pageSize: this.pageSize,
+          search: this.searchQuery,
+          status: this.statusFilter
+        });
         
-        // 实际API调用
-        // const response = await this.$api.evaluation.getTasks({
-        //   page: this.currentPage,
-        //   pageSize: this.pageSize
-        // });
-        // this.tasks = response.data.items;
-        // this.totalTasks = response.data.total;
+        this.tasks = this.$store.state.evaluationCenter.evaluationTasks.map(task => ({
+          id: task.id,
+          name: task.name,
+          modelName: task.model_name,
+          datasetName: task.dataset_name,
+          metrics: Array.isArray(task.metrics) ? task.metrics : Object.keys(task.metrics || {}),
+          status: task.status,
+          progress: this.getProgressFromStatus(task.status),
+          createTime: task.created_at
+        }));
+        
+        this.totalTasks = this.$store.state.evaluationCenter.pagination.total;
       } catch (error) {
         this.$message.error('获取评测任务列表失败');
         console.error(error);
@@ -478,6 +452,18 @@ export default {
         return 'exception';
       } else {
         return ''; // Default for 'running' or any other status
+      }
+    },
+    
+    // 根据状态获取进度
+    getProgressFromStatus(status) {
+      switch (status) {
+        case 'pending': return 0;
+        case 'running': return Math.floor(Math.random() * 80) + 10; // 10-90%
+        case 'completed': return 100;
+        case 'failed': return 0;
+        case 'cancelled': return 0;
+        default: return 0;
       }
     },
     

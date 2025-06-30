@@ -251,8 +251,8 @@ export default {
   },
   methods: {
     ...mapActions('evaluationCenter', [
-      'fetchEvaluationReports',
-      'fetchAllModels'
+      'fetchReports',
+      'fetchModels'
     ]),
     
     async initialize() {
@@ -268,7 +268,7 @@ export default {
     
     async fetchReportList() {
       try {
-        await this.fetchEvaluationReports({
+        await this.fetchReports({
           page: this.currentPage,
           page_size: this.pageSize,
           search: this.searchQuery,
@@ -285,7 +285,7 @@ export default {
     
     async fetchModelOptions() {
       try {
-        await this.fetchAllModels()
+        await this.fetchModels()
         this.modelOptions = this.models.map(model => ({
           value: model.id,
           label: model.name

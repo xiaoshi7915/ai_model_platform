@@ -2,7 +2,7 @@
 import request from '@/utils/request'
 
 // Mock数据开关 - 开发时可以设置为true来使用mock数据
-const USE_MOCK_DATA = true
+const USE_MOCK_DATA = false
 
 // Mock数据生成函数
 const generateMockEvaluationTasks = (count = 5) => {
@@ -102,7 +102,7 @@ export default {
     
     try {
       return await request({
-        url: '/evaluation-center/evaluation-tasks/',
+        url: '/evaluation-center/tasks/',
         method: 'get',
         params
       })
@@ -129,7 +129,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-tasks/${id}/`,
+        url: `/evaluation-center/tasks/${id}/`,
         method: 'get'
       })
     } catch (error) {
@@ -157,7 +157,7 @@ export default {
     
     try {
       return await request({
-        url: '/evaluation-center/evaluation-tasks/',
+        url: '/evaluation-center/tasks/',
         method: 'post',
         data
       })
@@ -181,7 +181,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-tasks/${id}/`,
+        url: `/evaluation-center/tasks/${id}/`,
         method: 'put',
         data
       })
@@ -204,7 +204,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-tasks/${id}/`,
+        url: `/evaluation-center/tasks/${id}/`,
         method: 'delete'
       })
     } catch (error) {
@@ -230,7 +230,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-tasks/${id}/start/`,
+        url: `/evaluation-center/tasks/${id}/start/`,
         method: 'post'
       })
     } catch (error) {
@@ -256,7 +256,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-tasks/${id}/stop/`,
+        url: `/evaluation-center/tasks/${id}/cancel/`,
         method: 'post'
       })
     } catch (error) {
@@ -281,7 +281,7 @@ export default {
     
     try {
       return await request({
-        url: '/evaluation-center/evaluation-reports/',
+        url: '/evaluation-center/reports/',
         method: 'get',
         params
       })
@@ -308,7 +308,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-reports/${id}/`,
+        url: `/evaluation-center/reports/${id}/`,
         method: 'get'
       })
     } catch (error) {
@@ -334,7 +334,7 @@ export default {
     
     try {
       return await request({
-        url: '/evaluation-center/model-comparisons/',
+        url: '/evaluation-center/comparisons/',
         method: 'get',
         params
       })
@@ -361,7 +361,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/model-comparisons/${id}/`,
+        url: `/evaluation-center/comparisons/${id}/`,
         method: 'get'
       })
     } catch (error) {
@@ -388,7 +388,7 @@ export default {
     
     try {
       return await request({
-        url: '/evaluation-center/model-comparisons/',
+        url: '/evaluation-center/comparisons/',
         method: 'post',
         data
       })
@@ -411,7 +411,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/model-comparisons/${id}/`,
+        url: `/evaluation-center/comparisons/${id}/`,
         method: 'delete'
       })
     } catch (error) {
@@ -438,7 +438,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-tasks/${taskId}/metrics/`,
+        url: `/evaluation-center/tasks/${taskId}/metrics/`,
         method: 'get'
       })
     } catch (error) {
@@ -469,7 +469,7 @@ export default {
     
     try {
       return await request({
-        url: `/evaluation-center/evaluation-reports/${id}/export/`,
+        url: `/evaluation-center/reports/${id}/download/`,
         method: 'get',
         params
       })

@@ -10,7 +10,7 @@ const useMockData = false
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: '/api/v1',  // 统一使用v1版本API
+  baseURL: 'http://localhost:5688/api/v1',  // 指向后端5688端口
   timeout: REQUEST_TIMEOUT,
   headers: {
     'Content-Type': 'application/json'
