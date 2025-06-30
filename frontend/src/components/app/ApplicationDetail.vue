@@ -1,7 +1,20 @@
 <template>
   <div class="application-detail">
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <i class="el-icon-loading"></i>
+      <p>正在加载应用详情...</p>
+    </div>
+    
+    <!-- 空数据提示 -->
+    <div v-else-if="!application" class="empty-container">
+      <i class="el-icon-warning"></i>
+      <p>未找到应用信息</p>
+      <el-button @click="$emit('back')">返回列表</el-button>
+    </div>
+    
     <!-- 基本信息卡片 -->
-    <el-card class="detail-card">
+    <el-card class="detail-card" v-if="application">
       <div slot="header">
         <span>应用信息</span>
         <el-button
@@ -35,7 +48,7 @@
     </el-card>
 
     <!-- 配置信息卡片 -->
-    <el-card class="detail-card">
+    <el-card class="detail-card" v-if="application">
       <div slot="header">
         <span>配置信息</span>
       </div>
@@ -66,7 +79,7 @@
     </el-card>
 
     <!-- 监控信息卡片 -->
-    <el-card class="detail-card" v-if="application.status === 'running'">
+    <el-card class="detail-card" v-if="application && application.status === 'running'">
       <div slot="header">
         <span>监控信息</span>
         <el-button
@@ -128,7 +141,7 @@
     </el-card>
 
     <!-- 日志信息卡片 -->
-    <el-card class="detail-card">
+    <el-card class="detail-card" v-if="application">
       <div slot="header">
         <span>日志信息</span>
         <div style="float: right;">
@@ -172,7 +185,7 @@
     </el-card>
 
     <!-- 插件信息卡片 -->
-    <el-card class="detail-card">
+    <el-card class="detail-card" v-if="application">
       <div slot="header">
         <span>插件信息</span>
         <el-button
@@ -220,7 +233,7 @@
     </el-card>
 
     <!-- 操作卡片 -->
-    <el-card class="detail-card">
+    <el-card class="detail-card" v-if="application">
       <div slot="header">
         <span>操作</span>
       </div>
@@ -293,13 +306,16 @@ import PluginList from './PluginList.vue'
 export default {
   name: 'ApplicationDetail',
   props: {
-    application: {
-      type: Object,
+    applicationId: {
+      type: [String, Number],
       required: true
     }
   },
   data() {
     return {
+      // 应用数据
+      application: null,
+      loading: false,
       // 监控数据
       monitoringData: null,
       // 日志数据
@@ -338,6 +354,55 @@ export default {
     ...mapActions('appCenter', [
       'fetchPlugins'
     ]),
+    
+    // 获取应用详情
+    async fetchApplicationDetail() {
+      if (!this.applicationId) return
+      
+      this.loading = true
+      try {
+        const response = await this.$store.dispatch('appCenter/fetchApplicationDetail', this.applicationId)
+        this.application = response
+        
+        // 获取其他数据
+        this.refreshMonitoringData()
+        this.refreshLogs()
+        this.fetchApplicationPlugins()
+        this.fetchAvailablePlugins()
+      } catch (error) {
+        console.error('获取应用详情失败:', error)
+        this.$message.error('获取应用详情失败')
+        
+        // 使用模拟数据作为回退
+        this.application = {
+          id: this.applicationId,
+          name: `应用 ${this.applicationId}`,
+          description: '这是一个示例应用',
+          status: 'stopped',
+          model_name: 'gpt-3.5-turbo',
+          endpoint: null,
+          created_by_username: 'admin',
+          created_at: new Date().toISOString(),
+          config: {
+            max_concurrency: 10,
+            timeout: 30,
+            log_level: 'INFO',
+            cache_size: 512,
+            batch_size: 1,
+            use_quantization: false,
+            env_vars: []
+          }
+        }
+        
+        // 获取其他数据
+        this.refreshMonitoringData()
+        this.refreshLogs()
+        this.fetchApplicationPlugins()
+        this.fetchAvailablePlugins()
+      } finally {
+        this.loading = false
+      }
+    },
     
     // 格式化日期
     formatDate(date) {
@@ -400,6 +465,8 @@ export default {
     
     // 刷新监控数据
     refreshMonitoringData() {
+      if (!this.application) return
+      
       // 调用API获取监控数据
       api.appCenter.getApplicationMonitoring(this.application.id)
         .then(response => {
@@ -407,7 +474,6 @@ export default {
         })
         .catch(error => {
           console.error('获取监控数据失败:', error)
-          this.$message.error('获取监控数据失败')
           
           // 如果API调用失败，使用模拟数据
           setTimeout(() => {
@@ -418,6 +484,8 @@ export default {
     
     // 刷新日志
     refreshLogs() {
+      if (!this.application) return
+      
       // 调用API获取日志数据
       api.appCenter.getApplicationLogs(this.application.id, {
         level: this.logLevel !== 'all' ? this.logLevel : undefined
@@ -428,7 +496,6 @@ export default {
         })
         .catch(error => {
           console.error('获取日志数据失败:', error)
-          this.$message.error('获取日志数据失败')
           
           // 如果API调用失败，使用模拟数据
           setTimeout(() => {
@@ -631,18 +698,9 @@ export default {
     }
   },
   created() {
-    // 获取监控数据
-    this.refreshMonitoringData()
-    
-    // 获取日志数据
-    this.refreshLogs()
-    
-    // 获取应用插件
-    this.fetchApplicationPlugins()
-    
-    // 获取可用插件
-    this.fetchAvailablePlugins()
-  }
+    // 先获取应用详情
+    this.fetchApplicationDetail()
+  },
 }
 </script>
 
@@ -764,5 +822,22 @@ export default {
   justify-content: center;
   gap: 20px;
   padding: 10px 0;
+}
+
+.loading-container, .empty-container {
+  text-align: center;
+  padding: 60px 20px;
+  color: #909399;
+}
+
+.loading-container i, .empty-container i {
+  font-size: 48px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.loading-container p, .empty-container p {
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 </style> 

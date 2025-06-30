@@ -251,7 +251,7 @@ export default {
   },
   methods: {
     ...mapActions('evaluationCenter', [
-      'fetchReports',
+      'fetchEvaluationReports',
       'fetchAllModels'
     ]),
     
@@ -268,7 +268,7 @@ export default {
     
     async fetchReportList() {
       try {
-        await this.fetchReports({
+        await this.fetchEvaluationReports({
           page: this.currentPage,
           page_size: this.pageSize,
           search: this.searchQuery,

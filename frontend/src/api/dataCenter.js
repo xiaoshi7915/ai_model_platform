@@ -158,5 +158,38 @@ export default {
       method: 'post',
       data: { query }
     })
+  },
+  
+  // 获取数据集使用情况
+  getDatasetUsage(id) {
+    return request({
+      url: `/data-center/datasets/${id}/usage/`,
+      method: 'get'
+    })
+  },
+  
+  // 获取数据集预览
+  getDatasetPreview(id, params = {}) {
+    return request({
+      url: `/data-center/datasets/${id}/preview/`,
+      method: 'get',
+      params
+    })
+  },
+  
+  // 获取知识库使用情况
+  getKnowledgeBaseUsage(id) {
+    return request({
+      url: `/data-center/knowledge-bases/${id}/usage/`,
+      method: 'get'
+    })
+  },
+  
+  // 为知识库创建向量索引
+  createVectorIndex(id) {
+    return request({
+      url: `/data-center/knowledge-bases/${id}/vector-index/`,
+      method: 'post'
+    })
   }
 }

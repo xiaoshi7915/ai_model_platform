@@ -194,25 +194,31 @@ export default {
   methods: {
     // 获取模型列表
     fetchModels() {
-      this.$store.dispatch('models/fetchModels')
+      return this.$store.dispatch('evaluationCenter/fetchAllModels')
         .then(models => {
-          this.modelOptions = models
+          this.modelOptions = models || []
+          return models
         })
         .catch(error => {
           console.error('获取模型列表失败:', error)
           this.$message.error('获取模型列表失败')
+          this.modelOptions = []
+          return []
         })
     },
     
     // 获取数据集列表
     fetchDatasets() {
-      this.$store.dispatch('datasets/fetchDatasets')
+      return this.$store.dispatch('evaluationCenter/fetchAllDatasets')
         .then(datasets => {
-          this.datasetOptions = datasets
+          this.datasetOptions = datasets || []
+          return datasets
         })
         .catch(error => {
           console.error('获取数据集列表失败:', error)
           this.$message.error('获取数据集列表失败')
+          this.datasetOptions = []
+          return []
         })
     },
     

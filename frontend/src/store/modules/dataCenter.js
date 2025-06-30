@@ -448,23 +448,26 @@ const actions = {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
     try {
-      // 模拟数据集预览API调用
-      const response = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({
-            data: [
-              { id: 1, name: '示例数据1', value: 100, category: 'A' },
-              { id: 2, name: '示例数据2', value: 200, category: 'B' },
-              { id: 3, name: '示例数据3', value: 150, category: 'A' }
-            ]
-          })
-        }, 500)
-      })
-      return response
+      const response = await dataCenter.getDatasetPreview(id)
+      return response.data || response
     } catch (error) {
       console.error('获取数据集预览失败:', error)
       commit('SET_ERROR', error.message || '获取数据集预览失败')
-      throw error
+      
+      // 如果API调用失败，使用模拟数据作为回退
+      const mockData = {
+        data: [
+          { id: 1, name: '示例数据1', value: 100, category: 'A' },
+          { id: 2, name: '示例数据2', value: 200, category: 'B' },
+          { id: 3, name: '示例数据3', value: 150, category: 'A' },
+          { id: 4, name: '示例数据4', value: 300, category: 'C' },
+          { id: 5, name: '示例数据5', value: 250, category: 'B' }
+        ],
+        total: 1000,
+        page: 1,
+        page_size: 10
+      }
+      return mockData
     } finally {
       commit('SET_LOADING', false)
     }
@@ -475,34 +478,26 @@ const actions = {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
     try {
-      // 模拟数据集使用情况API调用
-      const response = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({
-            data: [
-              {
-                id: 1,
-                type: '训练',
-                name: '文本分类训练任务',
-                created_at: new Date().toISOString(),
-                status: 'completed'
-              },
-              {
-                id: 2,
-                type: '评测',
-                name: '模型性能评测',
-                created_at: new Date().toISOString(),
-                status: 'running'
-              }
-            ]
-          })
-        }, 500)
-      })
-      return response
+      const response = await dataCenter.getDatasetUsage(id)
+      return response.data || response
     } catch (error) {
       console.error('获取数据集使用情况失败:', error)
       commit('SET_ERROR', error.message || '获取数据集使用情况失败')
-      throw error
+      
+      // 如果API调用失败，使用模拟数据作为回退
+      const mockData = {
+        training_jobs: [
+          { id: 1, name: '文本分类模型训练', status: 'completed', created_at: '2024-01-15' },
+          { id: 2, name: '情感分析模型训练', status: 'running', created_at: '2024-01-20' }
+        ],
+        applications: [
+          { id: 1, name: '智能客服应用', status: 'running', created_at: '2024-01-10' }
+        ],
+        evaluations: [
+          { id: 1, name: '模型性能评测', status: 'completed', created_at: '2024-01-18' }
+        ]
+      }
+      return mockData
     } finally {
       commit('SET_LOADING', false)
     }

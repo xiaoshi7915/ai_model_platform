@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "big_model_app"
+version = "0.1.0"
+description = "大型模型构建管理平台"
+authors = ["Chen Xiaoshi <chenxs@flamelephant.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "4.2.7"
+djangorestframework = "3.14.0"
+djangorestframework-simplejwt = "5.3.0"
+django-cors-headers = "4.3.0"
+django-filter = "23.3"
+drf-yasg = "1.21.7"
+psycopg2-binary = "2.9.9"
+langchain = "0.0.335"
+pgvector = "0.2.3"
+python-dotenv = "1.0.0"
+pandas = "2.1.1"
+numpy = "1.26.1"
+scikit-learn = "1.3.2"
+transformers = "4.35.0"
+torch = ">=2.2.0"
+pillow = "10.1.0"
+celery = "5.3.4"
+redis = "5.0.1"
+gunicorn = "21.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+black = "^23.3.0"
+isort = "^5.12.0"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88 

@@ -1,7 +1,7 @@
 <template>
   <div class="evaluation-report">
     <div class="report-header">
-      <h2>{{ report.task ? report.task.name + ' 评测报告' : '评测报告' }}</h2>
+      <h2>{{ (report && report.task) ? report.task.name + ' 评测报告' : '评测报告' }}</h2>
       <div class="report-actions">
         <el-button type="primary" size="small" @click="downloadReport" :loading="downloading">
           <i class="el-icon-download"></i> 下载报告
@@ -53,12 +53,12 @@
         <div class="report-task-info">
           <h3>任务信息</h3>
           <el-descriptions :column="2" border>
-            <el-descriptions-item label="任务名称">{{ report.task ? report.task.name : '-' }}</el-descriptions-item>
-            <el-descriptions-item label="模型">{{ report.task && report.task.model ? report.task.model.name : '-' }}</el-descriptions-item>
-            <el-descriptions-item label="数据集">{{ report.task && report.task.dataset ? report.task.dataset.name : '-' }}</el-descriptions-item>
-            <el-descriptions-item label="创建时间">{{ formatDate(report.created_at) }}</el-descriptions-item>
-            <el-descriptions-item label="创建者">{{ report.task ? report.task.created_by_username : '-' }}</el-descriptions-item>
-            <el-descriptions-item label="完成时间">{{ formatDate(report.updated_at) }}</el-descriptions-item>
+            <el-descriptions-item label="任务名称">{{ (report && report.task) ? report.task.name : '-' }}</el-descriptions-item>
+            <el-descriptions-item label="模型">{{ (report && report.task && report.task.model) ? report.task.model.name : '-' }}</el-descriptions-item>
+            <el-descriptions-item label="数据集">{{ (report && report.task && report.task.dataset) ? report.task.dataset.name : '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建时间">{{ formatDate(report ? report.created_at : null) }}</el-descriptions-item>
+            <el-descriptions-item label="创建者">{{ (report && report.task) ? report.task.created_by_username : '-' }}</el-descriptions-item>
+            <el-descriptions-item label="完成时间">{{ formatDate(report ? report.updated_at : null) }}</el-descriptions-item>
           </el-descriptions>
         </div>
 
