@@ -184,10 +184,6 @@ const routes = [
     redirect: '/evaluation-center/tasks'
   },
   {
-    path: '/api-connector',
-    redirect: '/api-connector'
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login,

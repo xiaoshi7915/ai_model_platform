@@ -3,7 +3,6 @@
 """
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 import os
 from django.utils.text import slugify
@@ -58,11 +57,6 @@ class Dataset(models.Model):
         if self.file and not self.file_format:
             _, ext = os.path.splitext(self.file.name)
             self.file_format = ext[1:] if ext else ''
-        
-        # 对file字段设置为非必填
-        # 如果是通过代码创建数据，可能没有实际文件
-        self._meta.get_field('file').blank = True
-        self._meta.get_field('file').null = True
             
         super().save(*args, **kwargs)
     

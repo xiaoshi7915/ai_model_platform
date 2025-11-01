@@ -216,10 +216,10 @@ class APIUsageLogViewSet(viewsets.ReadOnlyModelViewSet):
         if connection_id:
             queryset = queryset.filter(connection_id=connection_id)
             
-        # 按状态过滤
-        status = request.query_params.get('status')
-        if status:
-            queryset = queryset.filter(status=status)
+        # 按状态过滤（避免与Django REST framework的status模块冲突）
+        log_status = request.query_params.get('status')
+        if log_status:
+            queryset = queryset.filter(status=log_status)
             
         # 按日期范围过滤
         start_date = request.query_params.get('start_date')

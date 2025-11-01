@@ -14,12 +14,14 @@ redis==5.0.1
 gunicorn==21.2.0
 
 # CPU版本的依赖项（默认使用）
+# 注意: 如果需要安装PyTorch CPU版本，请使用以下命令:
+# pip install torch==2.1.2+cpu torchvision==0.16.2+cpu torchaudio==2.1.2+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+# 或者取消下面注释并使用 pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 langchain==0.0.335
 transformers==4.35.0
-torch==2.1.2+cpu
-torchvision==0.16.2+cpu
-torchaudio==2.1.2+cpu
---extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.2
+torchvision==0.16.2
+torchaudio==2.1.2
 
 # 数据库相关，根据需要启用
 # 如果使用PostgreSQL数据库，请取消以下注释

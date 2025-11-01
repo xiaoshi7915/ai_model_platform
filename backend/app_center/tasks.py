@@ -44,7 +44,8 @@ def deploy_application(application_id):
             application = Application.objects.get(id=application_id)
             application.status = 'error'
             application.save()
-        except:
+        except Exception:
+            # 忽略所有异常，避免二次失败
             pass
         
         # 重新抛出异常
@@ -79,7 +80,8 @@ def stop_application(application_id):
             application = Application.objects.get(id=application_id)
             application.status = 'error'
             application.save()
-        except:
+        except Exception:
+            # 忽略所有异常，避免二次失败
             pass
         
         # 重新抛出异常
