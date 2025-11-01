@@ -123,9 +123,9 @@ class ModelViewSet(viewsets.ModelViewSet):
     def versions(self, request, pk=None):
         """获取模型的所有版本"""
         model = self.get_object()
+        # 返回所有同名模型的版本，不限制用户（与其他查询保持一致）
         versions = Model.objects.filter(
-            name=model.name,
-            created_by=request.user
+            name=model.name
         ).values_list('version', flat=True)
         
         return Response({'results': list(versions)})

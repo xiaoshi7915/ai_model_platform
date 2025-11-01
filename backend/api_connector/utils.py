@@ -97,7 +97,8 @@ class APIConnector:
                 try:
                     error_detail = response.json()
                     error_msg += f"，错误信息: {json.dumps(error_detail)}"
-                except:
+                except Exception:
+                    # 如果响应不是JSON格式，使用文本内容
                     error_msg += f"，错误响应: {response.text}"
                 
                 logger.error(error_msg)

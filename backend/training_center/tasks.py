@@ -71,7 +71,8 @@ def start_training_job(training_job_id):
             model = training_job.model
             model.status = 'failed'
             model.save()
-        except:
+        except Exception:
+            # 忽略所有异常，避免二次失败
             pass
         
         # 重新抛出异常

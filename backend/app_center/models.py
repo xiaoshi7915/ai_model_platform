@@ -23,8 +23,10 @@ class Application(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name="应用描述")
     model = models.ForeignKey(Model, on_delete=models.CASCADE, related_name="applications", verbose_name="模型")
     api_endpoint = models.CharField(max_length=255, blank=True, null=True, verbose_name="API端点")
+    endpoint = models.CharField(max_length=255, blank=True, null=True, verbose_name="应用端点")  # 用于存储实际的应用访问端点
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='created', verbose_name="状态")
     config = models.JSONField(default=dict, blank=True, verbose_name="配置信息")
+    resource_usage = models.JSONField(default=dict, blank=True, verbose_name="资源使用情况")  # 用于存储CPU、内存、GPU等资源使用信息
     plugins = models.ManyToManyField('Plugin', blank=True, related_name="applications", verbose_name="插件")
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_applications", verbose_name="创建者")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")

@@ -53,7 +53,8 @@ def run_evaluation_task(task_id):
             task.status = 'failed'
             task.completed_at = timezone.now()
             task.save()
-        except:
+        except Exception:
+            # 忽略所有异常，避免二次失败
             pass
         
         # 重新抛出异常
@@ -172,8 +173,8 @@ def generate_model_comparison(comparison_id):
         # 获取模型比较
         comparison = ModelComparison.objects.get(id=comparison_id)
         
-        # 获取所有模型
-        models = comparison.models.all()
+        # 获取所有模型（字段名是model_list而不是models）
+        models = comparison.model_list.all()
         
         # 模拟比较过程（实际应用中应该调用真实的比较代码）
         time.sleep(3)  # 模拟比较时间
